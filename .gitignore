@@ -14,3 +14,6 @@ venv
 models
 api_key.txt
 bench/results/
+
+# shepherd session fieldnotes - personal orchestration notes, kept local only
+.shepherd/sessions/
