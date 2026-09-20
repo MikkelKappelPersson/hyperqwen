@@ -135,13 +135,17 @@ METRICS_ARGS=()
 # the alternative is countering it with --no-language-model-only from EXTRA_ARGS and
 # depending on which flag argparse saw last -- which regresses silently: images are
 # still accepted and still counted as prompt tokens, and the model answers from
-# placeholder embeddings. The two flags VISION=1 adds have no such conflict and can
-# be overridden from EXTRA_ARGS, which is expanded after them. The pixel cap is
+# placeholder embeddings. The one flag VISION=1 adds has no such conflict and can
+# be overridden from EXTRA_ARGS, which is expanded after it. The pixel cap is
 # shipped rather than left to the processor default because vLLM profiles the encoder
 # at the largest image it will accept, and that peak comes out of the KV pool:
 # 2097152 px = 2048 image tokens.
+# No --limit-mm-per-prompt: vLLM 0.28 defaults to 999/prompt and this model reports
+# unlimited, so the real caps are the context window (262144 // 2048 = 128 images)
+# and the per-image pixel cap. The startup encoder profile stays small: its batch
+# is sized from the encoder budget (max-num-batched-tokens), not this limit.
 if [ "${VISION:-0}" = 1 ]; then
-  VISION_ARGS='--limit-mm-per-prompt {"image":{"count":1}} --mm-processor-kwargs {"size":{"shortest_edge":65536,"longest_edge":2097152}}'
+  VISION_ARGS='--mm-processor-kwargs {"size":{"shortest_edge":65536,"longest_edge":2097152}}'
   # VISION_OFFLOAD keeps the tower's weights in pinned host RAM and copies each module to
   # the GPU for the duration of its own forward (patches/vision-tower-cpu-offload.patch).
   # It defaults ON, because on 24 GB SPEC=dflash2 + VISION=1 does not boot without it:
