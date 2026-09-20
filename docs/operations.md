@@ -6,7 +6,7 @@ Day-to-day start/stop and the failure modes actually hit on this machine.
 
 Box at time of writing: Arch (`eos-ext`), one RTX 5090 32 GiB, NVIDIA driver
 615.71.09 (open kernel modules), Docker 29.8.1 / Compose 5.5.1, NVIDIA
-Container Toolkit 1.20.0, image `ghcr.io/syv-ai/qwen38-27b-rtx3090:latest`,
+Container Toolkit 1.20.0, image `ghcr.io/syv-ai/hyperqwen:latest`,
 port 18020. Local tuning lives in `.env` (gitignored).
 
 ## Start / stop / status
